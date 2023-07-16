@@ -1,9 +1,33 @@
 const express = require('express');
+const connectDB = require('./db/connect');
+const tasks = require('./routes/tasks');
+require('dotenv').config();
+
 const app = express();
+const DB_URL = process.env.MONGO_URI;
 const PORT = 8080;
 
-app.listen(PORT, () => {`Listening on port ${PORT}...`});
+//middleware
+app.use(express.json());
 
-app.get('/', (req,res) => {
-    res.send('Hi');
-});
+const Listen = () => {
+    app.listen(PORT, () => {
+        console.log(`Listening on port ${PORT}...`)
+    })
+}
+
+//dbconnection
+const startDB = async () => {
+    try {
+        await connectDB(DB_URL);
+        Listen();
+    } catch(err) {
+        console.log(err);
+    }
+}
+    
+//routes
+app.use('/api/v1/tasks', tasks);
+
+//start dbconnection
+startDB();
