@@ -9,12 +9,7 @@ const PORT = 8080;
 
 //middleware
 app.use(express.json());
-
-const Listen = () => {
-    app.listen(PORT, () => {
-        console.log(`Listening on port ${PORT}...`)
-    })
-}
+app.use(express.static('./public'));
 
 //dbconnection
 const startDB = async () => {
@@ -31,3 +26,10 @@ app.use('/api/v1/tasks', tasks);
 
 //start dbconnection
 startDB();
+
+//listening on port
+const Listen = () => {
+    app.listen(PORT, () => {
+        console.log(`Listening on port ${PORT}...`)
+    })
+}

@@ -31,32 +31,31 @@ const createTask = async (req, res) => {
 const getSingleTask = async (req, res) => {
     try {
         const FIND_ID = await Task_db.findById(req.params.id);
-        if(!FIND_ID) {
-           return res.status(404).json({message: `No task found with id: ${FIND_ID}`})
-        }
         res.status(200).json(response(FIND_ID.id, FIND_ID.name, FIND_ID.completed));
     } catch (error) {
-        res.status(400).json({message:error.message});
+        res.status(404).json({message: `No task found with this id: ${req.params.id}`})
     }
 }
 
 const updateTask = async (req, res) => {
-    const FIND_ID = await Task_db.findById(req.params.id);
-    const UPDATE_TASK = await Task_db.update(FIND_ID)
-    res.status(200).json(UPDATE_TASK);
+    try {
+        const FIND_ID = await Task_db.findById(req.params.id);
+        const UPDATE_TASK = await Task_db.findByIdAndUpdate(FIND_ID, req.body, {new:true, runValidators: true})
+        res.status(200).json(response(UPDATE_TASK.id, UPDATE_TASK.name, UPDATE_TASK.completed));
+    } catch (error) {
+        res.status(404).json({message: `No task found with id: ${req.params.id}`})
+    }
 }
 
 const deleteTask = async (req, res) => {
     try {
         const FIND_ID = await Task_db.findByIdAndDelete(req.params.id);
-        if(!FIND_ID) {
-            return res.status(404).json({message: `No task found with id: ${FIND_ID}`})
-         }
         res.status(202).json(response(FIND_ID.id, FIND_ID.name, FIND_ID.completed));
     } catch (error) {
-        res.status(400).json({message:error.message});
+        res.status(404).json({message: `No task found with id: ${req.params.id}`})
     }
 }
+
 
 module.exports = {
     getAllTask,
