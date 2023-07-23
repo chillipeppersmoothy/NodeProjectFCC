@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         reqired: [true, 'Please provide passsword'],
         minlength: 6,
-        maxlength: 12
+        maxlength: 100
     }
 });
 
