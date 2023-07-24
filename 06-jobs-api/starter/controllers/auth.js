@@ -11,17 +11,17 @@ const api_response = (id,name,email,token) => {
 } 
 
 const register = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email } = req.body;
 
-    if (!name || !email || !password) {
-        throw new BadRequestError('Please add all the values in request.')
-    }
-    const salt = await bycrypt.genSalt(10);
-    const hash = await bycrypt.hash(password,salt);
+    // if (!name || !email || !password) {
+    //     throw new BadRequestError('Please add all the values in request.')
+    // }
+    // const salt = await bycrypt.genSalt(10);
+    // const hash = await bycrypt.hash(password,salt);
 
-    const tempUser = { name, email, password: hash }
+    // const tempUser = { name, email, password: hash }
 
-    const USER = await Users_DB.create(tempUser);
+    const USER = await Users_DB.create(req.body);
     const token = jwt.sign({ email, name }, SECRET, { expiresIn: '3600s' });
 
     await res.status(StatusCodes.CREATED).json( api_response(USER.id, USER.name, USER.email, token) );
