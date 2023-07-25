@@ -31,4 +31,10 @@ userSchema.pre('save', async function() {
     this.password = await bycrypt.hash(this.password, salt);
 });
 
+userSchema.methods.getName = () => {
+    return this.name;
+}
+
+userSchema.methods
+
 module.exports = mongoose.model('Users_DB', userSchema);

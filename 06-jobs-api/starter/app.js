@@ -18,10 +18,11 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 //db connection
 const connectDB = require('./db/connect');
 
-app.use(express.json());
 // extra packages
 
 // usage
+app.use(express.json());
+
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', jobRouter);
 
