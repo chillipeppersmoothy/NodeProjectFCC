@@ -31,10 +31,16 @@ userSchema.pre('save', async function() {
     this.password = await bycrypt.hash(this.password, salt);
 });
 
-userSchema.methods.getName = () => {
+userSchema.methods.getName = async function() {
     return this.name;
 }
 
-userSchema.methods
+userSchema.methods.getId = async function() {
+    return this._id;
+}
+
+userSchema.methods.getEmail = async function() {
+    return this.email;
+}
 
 module.exports = mongoose.model('Users_DB', userSchema);
