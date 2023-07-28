@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bycrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const SECRET = process.env.JWT_SECRET;
@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema({
 
 
 userSchema.pre('save', async function() {
-    const salt = await bycrypt.genSalt(10);
-    this.password = await bycrypt.hash(this.password, salt);
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods.getName = async function() {
@@ -48,6 +48,11 @@ userSchema.methods.getEmail = async function() {
 
 userSchema.methods.createJWT = async function() {
     return jwt.sign({userId: this._id, userEmail: this.email}, SECRET, {expiresIn: '3600s'} );
+    
+}
+
+userSchema.methods.comparePassword = async function(userPassword) {
+    return await bcrypt.compare(userPassword,this.password)
     
 }
 

@@ -1,10 +1,13 @@
 const { StatusCodes } = require('http-status-codes');
 const Users_DB = require('../models/User');
-const jwt = require('jsonwebtoken');
 const { BadRequestError, UnauthenticatedError } = require('../errors');
 
 const api_response = (id, name, email, token) => {
     return { user: { id: id, name: name, email: email }, token: token }
+}
+
+const verify = (value,err,message) => {
+    if(!value) { throw new err(message) }
 }
 
 const register = async (req, res) => {
@@ -26,9 +29,11 @@ const login = async (req, res) => {
     // get back the info from mongo based on email
     const USER = await Users_DB.findOne({ email: email });
     // if user is not present in db throw error
-    if (!USER) {
-        throw new UnauthenticatedError('Invalid Credentials')
-    }
+    verify(USER, UnauthenticatedError,'Invalid Credentails');
+    //compare password
+    const isPasswordCorrect = await USER.comparePassword(password);
+    // if password is correct throe
+    verify(isPasswordCorrect, UnauthenticatedError,'Invalid Credentails');
     // generate jwt token from userSchema method
     const token = await USER.createJWT();
     await res.status(StatusCodes.OK).json({ user: { email: USER.email, name: USER.name }, token: token });
